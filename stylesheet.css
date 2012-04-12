@@ -1,0 +1,19 @@
+.filler {
+  border: 2px solid #4b97ff;
+  height: 200px;
+  width: 100%; }
+
+#menu {
+  display: block;
+  width: 100%; }
+  #menu ul {
+    border: 2px solid #4bffb1;
+    padding: 10px 0; }
+  #menu li {
+    display: inline-block;
+    list-style-type: none;
+    text-align: center;
+    width: 19%; }
+
+#undocker {
+  border: 5px solid #fe415b; }
