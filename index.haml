@@ -7,6 +7,10 @@
 
     %link{:rel => "stylesheet", :href => "stylesheet.css"}
     %script{:src => "core.min.js"}=""
+    %script{:src => "Source/DockSimple.js"}=""
+
+    :javascript
+      window.docker = new DockSimple('#menu');
 
   %body
     - 3.times do
