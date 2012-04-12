@@ -12,7 +12,13 @@
     <script src='Source/DockSimple.js'></script>
     <script type='text/javascript'>
       //<![CDATA[
-        window.docker = new DockSimple('#menu');
+        window.addEvent('domready', function() {
+          dockOptions = {
+            undockElement: '#undocker'
+          }
+        
+          window.docker = new DockSimple('#menu', dockOptions);
+        });
       //]]>
     </script>
   </head>

@@ -22,14 +22,28 @@ var DockSimple;
 DockSimple = new Class({
   Implements: [Options, Events],
   options: {
-    undockElement: '',
+    undockElement: void 0,
     undockAt: 'top',
     dockedClass: 'docked',
     forcedClass: 'force-dock',
-    dockCoordinate: void 0
+    dockCoordinate: void 0,
+    offset: 0,
+    scrollThrottle: 0
   },
   initialize: function(element, options) {
-    this.element = element;
-    return this.setOptions(options);
+    this.setOptions(options);
+    this.element = $$(element);
+    if (this.undockElement == null) {
+      this.undockElement = $$(this.options.undockElement)[0];
+    }
+    this.elementY = this.element.getCoordinates().y - this.options.offset;
+    if (this.undockY == null) {
+      this.undockY = this.undockElement.getCoordinates()[this.options.undockAt];
+    }
+    return window.addEvent('scroll', this.dockElement);
+  },
+  dockElement: function() {
+    var scrollY;
+    return scrollY = window.getScrollTop();
   }
 });

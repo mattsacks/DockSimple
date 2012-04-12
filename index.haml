@@ -10,7 +10,14 @@
     %script{:src => "Source/DockSimple.js"}=""
 
     :javascript
-      window.docker = new DockSimple('#menu');
+      window.addEvent('domready', function() {
+        dockOptions = {
+          undockElement: '#undocker'
+        }
+
+        window.docker = new DockSimple('#menu', dockOptions);
+      });
+
 
   %body
     - 3.times do
