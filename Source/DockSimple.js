@@ -28,16 +28,19 @@ DockSimple = new Class({
     forcedClass: 'force-dock',
     dockCoordinate: void 0,
     offset: 0,
-    scrollThrottle: 0
+    scrollThrottle: 0,
+    replaceElement: false,
+    active: true
   },
   initialize: function(element, options) {
     this.setOptions(options);
-    this.docked = false;
     this.element = $$(element)[0];
     this.undocker = this.options.undockElement != null ? $$(this.options.undockElement)[0] : void 0;
     this.elementY = this.options.dockCoordinate || this.element.getCoordinates().top - this.options.offset;
     this.undockY = this.undocker != null ? this.undocker.getCoordinates()[this.options.undockAt] : void 0;
-    window.addEvent('scroll', this.toDock.bind(this));
+    this.active = this.options.active;
+    this.scrollEvent = this.toDock.bind(this);
+    if (!!this.active) window.addEvent('scroll', this.scrollEvent);
     return this;
   },
   toDock: function() {
@@ -45,24 +48,37 @@ DockSimple = new Class({
     scrollY = window.getScrollTop();
     if (scrollY >= this.elementY && !this.docked) {
       if ((this.undockY != null) && scrollY <= this.undockY) {
-        return this.dockElement();
+        this.dockElement();
       } else if (!(this.undockY != null)) {
-        return this.dockElement();
+        this.dockElement();
       }
     } else if (this.docked) {
       if ((this.undockY != null) && scrollY >= this.undockY) {
-        return this.undockElement();
+        this.undockElement();
       } else if (scrollY <= this.elementY) {
-        return this.undockElement();
+        this.undockElement();
       }
     }
+    return this.docked;
   },
   dockElement: function() {
     this.element.addClass(this.options.dockedClass);
-    return this.docked = true;
+    this.docked = true;
+    return this;
   },
   undockElement: function() {
     this.element.removeClass(this.options.dockedClass);
-    return this.docked = false;
+    this.docked = false;
+    return this;
+  },
+  activate: function(attach) {
+    if (!this.active) window.addEvent('scroll', this.scrollEvent);
+    this.active = true;
+    if (attach) return this.dockElement();
+  },
+  deactivate: function(detach) {
+    if (this.active) window.removeEvent('scroll', this.scrollEvent);
+    this.active = false;
+    if (detach) return this.undockElement();
   }
 });

@@ -29,12 +29,11 @@ DockSimple = new Class
     dockCoordinate: undefined
     offset:         0
     scrollThrottle: 0
+    replaceElement: false
+    active:         true
 
   initialize: (element, options) ->
     @setOptions(options)
-
-    # starting out undocked FIXME
-    @docked = false
 
     # gather our elements
     @element  = $$(element)[0]
@@ -46,10 +45,17 @@ DockSimple = new Class
     # the y value in which to undock the docked element
     @undockY  = if @undocker? then @undocker.getCoordinates()[@options.undockAt]
 
-    window.addEvent('scroll', @toDock.bind(this))
+    # the active state
+    @active = @options.active
+
+    # cach the bound method for attaching/detaching
+    @scrollEvent = @toDock.bind(this)
+
+    window.addEvent('scroll', @scrollEvent) unless !@active
 
     return this
 
+  # determines whether to dock or undock the element based on scroll amount
   toDock: ->
     scrollY = window.getScrollTop()
 
@@ -71,12 +77,30 @@ DockSimple = new Class
       else if scrollY <= @elementY
         @undockElement()
 
+    return @docked
+
   # add the dockedClass to the DockSimple.element
   dockElement: ->
     @element.addClass(@options.dockedClass)
     @docked = true
+    return this
 
   # remove the dockedClass from the DockSimple.element
   undockElement: ->
     @element.removeClass(@options.dockedClass)
     @docked = false
+    return this
+
+  # re-attach scroll event if previously detached
+  # param: attach - determine calling dockElement() immediately
+  activate: (attach) ->
+    window.addEvent('scroll', @scrollEvent) unless @active
+    @active = true
+    if attach then @dockElement()
+
+  # detach the scroll event from window
+  # param: detach - determine calling undockElement() immediately
+  deactivate: (detach) ->
+    window.removeEvent('scroll', @scrollEvent) if @active
+    @active = false
+    if detach then @undockElement()
