@@ -32,18 +32,37 @@ DockSimple = new Class({
   },
   initialize: function(element, options) {
     this.setOptions(options);
-    this.element = $$(element);
-    if (this.undockElement == null) {
-      this.undockElement = $$(this.options.undockElement)[0];
+    this.docked = false;
+    this.element = $$(element)[0];
+    this.undocker = this.options.undockElement != null ? $$(this.options.undockElement)[0] : void 0;
+    this.elementY = this.options.dockCoordinate || this.element.getCoordinates().top - this.options.offset;
+    this.undockY = this.undocker != null ? this.undocker.getCoordinates()[this.options.undockAt] : void 0;
+    window.addEvent('scroll', this.toDock.bind(this));
+    return this;
+  },
+  toDock: function() {
+    var scrollY;
+    scrollY = window.getScrollTop();
+    if (scrollY >= this.elementY && !this.docked) {
+      if ((this.undockY != null) && scrollY <= this.undockY) {
+        return this.dockElement();
+      } else if (!(this.undockY != null)) {
+        return this.dockElement();
+      }
+    } else if (this.docked) {
+      if ((this.undockY != null) && scrollY >= this.undockY) {
+        return this.undockElement();
+      } else if (scrollY <= this.elementY) {
+        return this.undockElement();
+      }
     }
-    this.elementY = this.element.getCoordinates().y - this.options.offset;
-    if (this.undockY == null) {
-      this.undockY = this.undockElement.getCoordinates()[this.options.undockAt];
-    }
-    return window.addEvent('scroll', this.dockElement);
   },
   dockElement: function() {
-    var scrollY;
-    return scrollY = window.getScrollTop();
+    this.element.addClass(this.options.dockedClass);
+    return this.docked = true;
+  },
+  undockElement: function() {
+    this.element.removeClass(this.options.dockedClass);
+    return this.docked = false;
   }
 });
