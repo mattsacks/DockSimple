@@ -13,11 +13,18 @@
     <script type='text/javascript'>
       //<![CDATA[
         window.addEvent('domready', function() {
-          dockOptions = {
-            undockElement: '#undocker'
+          var dockOptions = {
+            undockElement: '#undocker',
+            replaceElement: true,
+            onDocked: function(element) {
+              return console.log('docked', element);
+            },
+            onUndocked: function(element) {
+              return console.log('undocked', element);
+            }
           }
         
-          window.docker = new DockSimple('#menu', dockOptions);
+          return window.docker = new DockSimple('#menu', dockOptions);
         });
       //]]>
     </script>

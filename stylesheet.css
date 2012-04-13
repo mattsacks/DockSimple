@@ -5,16 +5,20 @@
 }
 
 #menu {
+  border: 2px solid #4bffb1;
   display: block;
   width: 100%;
 }
 #menu.docked {
+  border-left: 0 none;
+  left: 0;
   position: fixed;
   top: 0;
 }
 #menu ul {
-  border: 2px solid #4bffb1;
+  margin: 0;
   padding: 10px 0;
+  width: 100%;
 }
 #menu li {
   display: inline-block;
