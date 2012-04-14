@@ -15,6 +15,8 @@
         window.addEvent('domready', function() {
           var dockOptions = {
             undockElement: '#undocker',
+            undockAt:      'top',
+            undockSide:    'bottom',
             replaceElement: true,
             onDocked: function(element) {
               return console.log('docked', element);
@@ -24,7 +26,7 @@
             }
           }
         
-          return window.docker = new DockSimple('#menu', dockOptions);
+          window.docker = new DockSimple('.menu[0]', dockOptions);
         });
       //]]>
     </script>
@@ -35,11 +37,11 @@
     <div class='filler'></div>
     <div id='menu'>
       <ul>
-        <li>0</li>
-        <li>1</li>
-        <li>2</li>
-        <li>3</li>
-        <li>4</li>
+        <li>&nbsp;</li>
+        <li>&nbsp;</li>
+        <li>&nbsp;</li>
+        <li>&nbsp;</li>
+        <li>&nbsp;</li>
       </ul>
     </div>
     <div class='filler'></div>

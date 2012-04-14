@@ -13,6 +13,8 @@
       window.addEvent('domready', function() {
         var dockOptions = {
           undockElement: '#undocker',
+          undockAt:      'top',
+          undockSide:    'bottom',
           replaceElement: true,
           onDocked: function(element) {
             return console.log('docked', element);
@@ -22,7 +24,7 @@
           }
         }
 
-        return window.docker = new DockSimple('#menu', dockOptions);
+        window.docker = new DockSimple('#menu', dockOptions);
       });
 
 
@@ -32,8 +34,8 @@
 
     #menu
       %ul
-        - 5.times do |i|
-          %li #{i}
+        - 5.times do
+          %li &nbsp;
 
     - 5.times do 
       .filler

@@ -18,7 +18,7 @@ This creates a new object `docker` which will dock the `#menu` element to the to
 
 * `undockElement`: (_type: Element_) <br />
     The element in which DockSimple will undock it's `element` at
-* `undockAt`: (_type: String, default: 'top'_) <br />
+* `undockAt`: (_type: String, default: 'bottom'_) <br />
     Undocks at the 'top' or 'bottom' of it's `undockElement`
 * `dockedClass`: (_type: String, default: 'docked'_) <br />
     The class applied to the `element` when docked
@@ -43,6 +43,9 @@ This creates a new object `docker` which will dock the `#menu` element to the to
 
 The following can be invoked directly from the instantiated object returned from `new DockSimple()`:
 
+* `attachUndocker`: (_returns: Element, args: undocker [String]_) <br />
+    Calculates the Y coordinate value in which to undock the `element`. Returns
+    the element instance of the passed in selector.
 * `toDock`: (_returns: Boolean_) <br />
     A function that calculates the docking or undocking of the `element`.
     Returns the `docked` state.
@@ -62,6 +65,24 @@ The following can be invoked directly from the instantiated object returned from
     `undockElement` for immediate undocking.
 
 ### Provided
+
+**String**
+
+Added to the `String` type is `findElementIndex`, a easy way to pass a string
+selector and index the found elements.
+
+* `findElementIndex`: (_returns: Element, args: selector [String]_) <br />
+    Given a selector string `.foo[2]`, this will find the second instance of an
+    element with the `foo` class on the page. If nothing with the given index is
+    found, returns `undefined`. If passed in a selector with no index provided,
+    (example: `.foo.findElementIndex()`), returns the first instance of the
+    element found.
+
+    example: `var docker = new DockSimple('.menu[2]', {
+      undockAt: '.menu[3]'
+    });`
+
+**Function**
 
 Two added methods on the `Function` type, `throttle` and `debounce`, are
 available for modifying amplitude of the `scrollEvent` if needed.

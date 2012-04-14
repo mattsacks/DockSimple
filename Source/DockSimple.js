@@ -24,6 +24,7 @@ DockSimple = new Class({
   options: {
     undockElement: void 0,
     undockAt: 'bottom',
+    undockSide: 'top',
     dockedClass: 'docked',
     forcedClass: 'force-dock',
     dockCoordinate: void 0,
@@ -34,16 +35,16 @@ DockSimple = new Class({
   },
   initialize: function(element, options) {
     this.setOptions(options);
-    this.element = $$(element)[0];
-    this.undocker = this.options.undockElement != null ? $$(this.options.undockElement)[0] : void 0;
+    this.element = element.findElementIndex();
+    this.elementHeight = this.element.getHeight();
+    this.undocker = this.options.undockElement != null ? this.attachUndocker(this.options.undockElement) : void 0;
     this.elementY = this.options.dockCoordinate || this.element.getCoordinates().top - this.options.dockOffset;
-    this.undockY = this.undocker != null ? this.undocker.getCoordinates()[this.options.undockAt] - this.options.undockOffset : void 0;
     this.active = this.options.active;
     if (this.options.replaceElement) {
       this.dummy = new Element('div', {
         id: 'DockSimple-dummy',
         styles: {
-          height: this.element.getHeight(),
+          height: this.elementHeight,
           display: 'none'
         }
       });
@@ -53,13 +54,19 @@ DockSimple = new Class({
     if (!!this.active) window.addEvent('scroll', this.scrollEvent);
     return this;
   },
+  attachUndocker: function(undocker) {
+    if (undocker == null) return;
+    this.undocker = undocker.findElementIndex();
+    this.undockY = this.options.undockSide === 'bottom' && (this.undocker != null) ? this.undocker.getCoordinates()[this.options.undockAt] - (this.elementHeight + this.options.undockOffset) : this.undocker != null ? this.undocker.getCoordinates()[this.options.undockAt] - this.options.undockOffset : void 0;
+    return this.undocker;
+  },
   toDock: function() {
     var scrollY;
-    scrollY = window.getScrollTop();
+    scrollY = window.scrollY;
     if (scrollY >= this.elementY && !this.docked) {
       if ((this.undockY != null) && scrollY <= this.undockY) {
         this.dockElement();
-      } else if (!(this.undockY != null)) {
+      } else if (this.undockY == null) {
         this.dockElement();
       }
     } else if (this.docked) {
@@ -96,6 +103,18 @@ DockSimple = new Class({
     if (this.active) window.removeEvent('scroll', this.scrollEvent);
     this.active = false;
     if (detach) return this.undockElement();
+  }
+});
+
+String.implement({
+  findElementIndex: function() {
+    var index;
+    index = this.match(/\[(\d+)\]$/);
+    if (index && index[1]) {
+      return $$('' + this.match(/(.*)\[\d+\]$/)[1])[index[1]];
+    } else {
+      return $$('' + this)[0];
+    }
   }
 });
 

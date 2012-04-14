@@ -24,6 +24,7 @@ DockSimple = new Class
   options:
     undockElement:  undefined
     undockAt:       'bottom'
+    undockSide:     'top'
     dockedClass:    'docked'
     forcedClass:    'force-dock'
     dockCoordinate: undefined
@@ -36,15 +37,13 @@ DockSimple = new Class
     @setOptions(options)
 
     # gather our elements
-    @element  = $$(element)[0]
-    @undocker = if @options.undockElement? then $$(@options.undockElement)[0]
+    @element = element.findElementIndex()
+    @elementHeight = @element.getHeight()
+    @undocker = if @options.undockElement? then @attachUndocker(@options.undockElement)
 
     # calculate the coordinates of the element to dock
     @elementY =
       @options.dockCoordinate or @element.getCoordinates().top - @options.dockOffset
-    # the y value in which to undock the docked element
-    @undockY  = if @undocker?
-      @undocker.getCoordinates()[@options.undockAt] - @options.undockOffset
 
     # the active state
     @active = @options.active
@@ -54,7 +53,7 @@ DockSimple = new Class
       @dummy = new Element 'div',
         id: 'DockSimple-dummy'
         styles:
-          height:  @element.getHeight()
+          height:  @elementHeight
           display: 'none'
 
       @element.grab(@dummy, 'after')
@@ -66,9 +65,27 @@ DockSimple = new Class
 
     return this
 
+  # add an undocking element to calculations in which to undock
+  attachUndocker: (undocker) ->
+    return unless undocker?
+    @undocker = undocker.findElementIndex()
+
+    # the y value in which to undock the docked element
+    @undockY =
+      # if we want to undock the element when it's bottom touches the
+      # undockSide of the undocker
+      if @options.undockSide is 'bottom' and @undocker?
+        @undocker.getCoordinates()[@options.undockAt] -
+        (@elementHeight + @options.undockOffset)
+
+      else if @undocker?
+        @undocker.getCoordinates()[@options.undockAt] - @options.undockOffset
+
+    return @undocker
+
   # determines whether to dock or undock the element based on scroll amount
   toDock: ->
-    scrollY = window.getScrollTop()
+    scrollY = window.scrollY
 
     # if scrolled past the element to dock and it hasnt docked yet
     if scrollY >= @elementY and !@docked
@@ -76,7 +93,7 @@ DockSimple = new Class
       if @undockY? and scrollY <= @undockY
         @dockElement()
       # if undockElement wasn't specified
-      else if !@undockY?
+      else unless @undockY?
         @dockElement()
 
     else if @docked
@@ -122,6 +139,16 @@ DockSimple = new Class
     @active = false
     if detach then @undockElement()
 
+
+String.implement
+  # find an element based on a given index
+  # example: '.foo[2].findElementIndex()' will return the second .foo element
+  findElementIndex: ->
+    index = @match(/\[(\d+)\]$/)
+    if index and index[1]
+      return $$(''+@match(/(.*)\[\d+\]$/)[1])[index[1]]
+    else
+      return $$(''+this)[0]
 
 # provide a throttle event for functions if not previously defined
 unless Function.throttle
