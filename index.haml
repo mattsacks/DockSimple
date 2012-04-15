@@ -1,4 +1,4 @@
-!!!
+!!! 5
 %html
   %head
     :javascript
@@ -32,15 +32,11 @@
     - 3.times do
       .filler
 
-    #menu
-      %ul
-        - 5.times do
-          %li &nbsp;
+    - 10.times do |i|
+      .menu{:class => "number-#{i + 1}"}
+        %ul
+          - 5.times do
+            %li &nbsp;
 
-    - 5.times do 
-      .filler
-
-    #undocker
-
-    -5.times do
-      .filler
+      - 5.times do 
+        .filler

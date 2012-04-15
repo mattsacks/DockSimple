@@ -1,12 +1,19 @@
+*
+  box-sizing: border-box
+
 .filler
   border: 2px solid #4B97FF
   height: 200px
   width: 100%
 
-#menu
-  border: 2px solid #4BFFB1
+.menu
   display: block
   width: 100%
+
+  // iterate across the color spectrum
+  @for $i from 1 through 10
+    &.number-#{$i}
+      background-color: hsl($i * 36, 100%, 80%)
 
   &.docked
     border-left: 0 none
