@@ -99,11 +99,11 @@ DockSimple = new Class
     else if @docked
       # undock the element from the undocked element
       if @undockY? and scrollY >= @undockY
-        @undockElement()
+        @undockElement('end')
 
       # undock the element from its original position
       else if scrollY <= @elementY
-        @undockElement()
+        @undockElement('start')
 
     return @docked
 
@@ -113,16 +113,25 @@ DockSimple = new Class
     @element.addClass(@options.dockedClass)
     @docked = true
     @dummy.setStyle('display', 'block') if @options.replaceElement
-    this.fireEvent('docked', @element)
+    this.fireEvent('docked', [@element, @elementY])
     return this
 
-  # remove the dockedClass from the DockSimple.element
-  undockElement: ->
+  # remove the dockedClass from the DockSimple.element  
+  # _params_: **dir** [String] - either 'start' or 'end', detected from the
+  # undocking direction
+  undockElement: (dir) ->
     return if @element.hasClass(@options.forcedClass)
     @element.removeClass(@options.dockedClass)
     @docked = false
     @dummy.setStyle('display', 'none') if @options.replaceElement
-    this.fireEvent('undocked', @element)
+
+    # pass the undocked coordinate from the scrolled direction
+    if dir is 'start'
+      this.fireEvent('undocked', [@element, @elementY])
+    else if dir is 'end'
+      this.fireEvent('undocked', [@element, @undockY])
+    else
+      this.fireEvent('undocked', @element)
     return this
 
   # re-attach scroll event if previously detached  

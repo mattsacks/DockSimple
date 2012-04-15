@@ -71,9 +71,9 @@ DockSimple = new Class({
       }
     } else if (this.docked) {
       if ((this.undockY != null) && scrollY >= this.undockY) {
-        this.undockElement();
+        this.undockElement('end');
       } else if (scrollY <= this.elementY) {
-        this.undockElement();
+        this.undockElement('start');
       }
     }
     return this.docked;
@@ -83,15 +83,21 @@ DockSimple = new Class({
     this.element.addClass(this.options.dockedClass);
     this.docked = true;
     if (this.options.replaceElement) this.dummy.setStyle('display', 'block');
-    this.fireEvent('docked', this.element);
+    this.fireEvent('docked', [this.element, this.elementY]);
     return this;
   },
-  undockElement: function() {
+  undockElement: function(dir) {
     if (this.element.hasClass(this.options.forcedClass)) return;
     this.element.removeClass(this.options.dockedClass);
     this.docked = false;
     if (this.options.replaceElement) this.dummy.setStyle('display', 'none');
-    this.fireEvent('undocked', this.element);
+    if (dir === 'start') {
+      this.fireEvent('undocked', [this.element, this.elementY]);
+    } else if (dir === 'end') {
+      this.fireEvent('undocked', [this.element, this.undockY]);
+    } else {
+      this.fireEvent('undocked', this.element);
+    }
     return this;
   },
   activate: function(attach) {

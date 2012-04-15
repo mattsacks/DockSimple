@@ -18,11 +18,11 @@
             undockAt:      'top',
             undockSide:    'bottom',
             replaceElement: true,
-            onDocked: function(element) {
-              return console.log('docked', element);
+            onDocked: function(element, dockY) {
+              return console.log('docked', element, dockY);
             },
-            onUndocked: function(element) {
-              return console.log('undocked', element);
+            onUndocked: function(element, undockY) {
+              return console.log('undocked', element, undockY);
             }
           }
         

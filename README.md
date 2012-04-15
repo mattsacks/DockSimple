@@ -33,17 +33,29 @@ This creates a new object `docker` which will dock the `#menu` element to the to
     An amount to deduct from the `undockAt` coordinate of the `undockElement`
 * `replaceElement`: (_type: Boolean, default: false_) <br />
     A boolean to determine whether a dummy element with the same height as the
-    given `element` should be replaced when applyed the `dockedClass`
+    given `element` should be replaced when applyed the `dockedClass`. This is
+    really useful for preventing a 'jump' in the page when docking/undocking the
+    `element`.
 * `active`: (_type: Boolean, default: true_) <br />
     A boolean of whether or not the newly initialized DockSimple object does
     anything. In order to activate later, call the `DockSimple.activate` method.
+* `onDocked`: (_type: Function, returns: element [Element], elementY [Number]_) <br />
+    Fires when docking the given `element`.
+* `onUndocked`: (_type: Function, returns: element [Element], undockY [Number]_) <br />
+    Fires when undocking the given `element`.
 
+### Events
 
-### Methods
+DockSimple fires two events, `docked` and `undocked`, both of which receive two
+arguments. It's recommended to pass in whichever functions you want to fire on
+those events as options `onDocked` and `onUndocked`. Please see above for which
+arguments to expect in the given function.
+
+### Instance Methods
 
 The following can be invoked directly from the instantiated object returned from `new DockSimple()`:
 
-* `attachUndocker`: (_returns: Element, args: undocker [String]_) <br />
+* `attachUndocker`: (_args: undocker [String], returns: Element_) <br />
     Calculates the Y coordinate value in which to undock the `element`. Returns
     the element instance of the passed in selector.
 * `toDock`: (_returns: Boolean_) <br />
@@ -52,9 +64,10 @@ The following can be invoked directly from the instantiated object returned from
 * `dockElement`: (_returns: this_) <br />
     Applies the `dockedClass` to the `element` and set the current `docked`
     state as `true`
-* `undockElement`: (_returns: this_) <br />
+* `undockElement`: (_args: dir [String], returns: this_) <br />
     Removes the `dockedClass` from the `element` and set the current
-    `docked` state as false
+    `docked` state as false. `dir` should be a string `start` or `end` in
+    coordination with the direction of scrolling down the page.
 * `activate`: (_args: attach [Boolean], returns: this_) <br />
     Re-attaches the `scrollEvent` from the `window` if not already attached and
     sets the `active` state to true. Given a single argument `true`, will call
