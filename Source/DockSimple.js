@@ -31,6 +31,8 @@ DockSimple = new Class({
     dockOffset: 0,
     undockOffset: 0,
     replaceElement: false,
+    dummyHide: false,
+    multiReplace: false,
     active: true
   },
   initialize: function(element, options) {
@@ -48,6 +50,7 @@ DockSimple = new Class({
           display: 'none'
         }
       });
+      this.options.dummyHide = true;
       this.element.grab(this.dummy, 'after');
     }
     this.scrollEvent = this.toDock.bind(this);
@@ -90,7 +93,15 @@ DockSimple = new Class({
     if (this.element.hasClass(this.options.forcedClass)) return;
     this.element.removeClass(this.options.dockedClass);
     this.docked = false;
-    if (this.options.replaceElement) this.dummy.setStyle('display', 'none');
+    if (this.options.replaceElement && this.options.dummyHide) {
+      if (this.options.multiReplace) {
+        this.dummy.setStyle('display', 'none');
+      } else if (dir === 'start' && this.options.multiDock) {
+        this.dummy.setStyle('display', 'none');
+      } else if (!(dir === 'end' && this.options.multiDock)) {
+        this.dummy.setStyle('display', 'none');
+      }
+    }
     if (dir === 'start') {
       this.fireEvent('undocked', [this.element, this.elementY]);
     } else if (dir === 'end') {
@@ -109,6 +120,31 @@ DockSimple = new Class({
     if (this.active) window.removeEvent('scroll', this.scrollEvent);
     this.active = false;
     if (detach) return this.undockElement();
+  }
+});
+
+DockSimple.extend({
+  multiDock: function(selector, options) {
+    var dockers, elements, i, undockSelector;
+    elements = $$(selector).length;
+    if (elements > 0) {
+      dockers = [];
+      options.multiDock = true;
+      for (i = 0; 0 <= elements ? i < elements : i > elements; 0 <= elements ? i++ : i--) {
+        if (i === 1 && !options.multiReplace && options.replaceElement) {
+          options.replaceElement = false;
+          options.dummyHide = false;
+        }
+        undockSelector = selector + '[' + (i + 1) + ']';
+        Object.merge(options, {
+          undockElement: undockSelector
+        });
+        dockers.push(new DockSimple(selector + '[' + i + ']', options));
+      }
+    } else {
+      dockers = new DockSimple(selector, options);
+    }
+    return dockers;
   }
 });
 

@@ -31,6 +31,8 @@ DockSimple = new Class
     dockOffset:     0
     undockOffset:   0
     replaceElement: false
+    dummyHide:      false
+    multiReplace:   false
     active:         true
 
   initialize: (element, options) ->
@@ -56,6 +58,7 @@ DockSimple = new Class
           height:  @elementHeight
           display: 'none'
 
+      @options.dummyHide = true
       @element.grab(@dummy, 'after')
 
     # cache the bound method for attaching/detaching
@@ -123,7 +126,18 @@ DockSimple = new Class
     return if @element.hasClass(@options.forcedClass)
     @element.removeClass(@options.dockedClass)
     @docked = false
-    @dummy.setStyle('display', 'none') if @options.replaceElement
+
+    if @options.replaceElement and @options.dummyHide
+      # always undock the dummy element if there's multiple instances
+      if @options.multiReplace
+        @dummy.setStyle('display', 'none')
+      # undock the dummy element when scrolling up the page
+      else if dir is 'start' and @options.multiDock
+        @dummy.setStyle('display', 'none')
+      # undock the dummy element when scrolling down the
+      # page for a single instance of DockSimple
+      else unless dir is 'end' and @options.multiDock
+        @dummy.setStyle('display', 'none')
 
     # pass the undocked coordinate from the scrolled direction
     if dir is 'start'
@@ -132,6 +146,7 @@ DockSimple = new Class
       this.fireEvent('undocked', [@element, @undockY])
     else
       this.fireEvent('undocked', @element)
+
     return this
 
   # re-attach scroll event if previously detached  
@@ -149,6 +164,30 @@ DockSimple = new Class
     if detach then @undockElement()
 
 
+# ## class-level methods
+DockSimple.extend
+  # create multiple instances of DockSimple to dock multiple elements
+  multiDock: (selector, options) ->
+    elements = $$(selector).length
+    if elements > 0
+      dockers = []
+      options.multiDock = true
+
+      for i in [0...elements]
+        # don't create a dummy element for each selection unless directed to
+        if i is 1 and !options.multiReplace and options.replaceElement
+          options.replaceElement = false
+          options.dummyHide      = false
+
+        undockSelector = selector + '[' + (i + 1) + ']'
+        Object.merge(options, undockElement: undockSelector)
+        dockers.push new DockSimple(selector + '[' + i + ']', options)
+    else
+      dockers = new DockSimple(selector, options)
+
+    return dockers
+
+# ## required modification to the String type
 String.implement
   # find an element based on a given index
   # example: '.foo[2].findElementIndex()' will return the second .foo element
@@ -158,6 +197,9 @@ String.implement
       return $$(''+@match(/(.*)\[\d+\]$/)[1])[index[1]]
     else
       return $$(''+this)[0]
+
+
+# ## provided methods for performance improvements / customzation
 
 # provide a throttle event for functions if not previously defined
 unless Function.throttle

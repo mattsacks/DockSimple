@@ -14,6 +14,9 @@ var docker = new DockSimple('#menu', dockOptions);
 
 This creates a new object `docker` which will dock the `#menu` element to the top of the screen and undock it once the user scrolls to the last `.feature` div element.
 
+There are many different ways to use DockSimple for both singular and multiple
+elements. Please explore the examples folder for some ideas and inspiration.
+
 ### Options
 
 * `undockElement`: (_type: Element_) <br />
@@ -36,6 +39,15 @@ This creates a new object `docker` which will dock the `#menu` element to the to
     given `element` should be replaced when applyed the `dockedClass`. This is
     really useful for preventing a 'jump' in the page when docking/undocking the
     `element`.
+* `dummyHide`: (_type: Boolean, default: false_) <br />
+    Determines whether or not to hide the replacement element when undocking the
+    `element`. This will get switched to true automatically when using
+    `replaceElement`.
+* `multiReplace`: (_type: Boolean, default: false_) <br />
+    Adds a dummy replacement element for each docked element when using
+    `DockSimple.multiDock`.  Defaults to hiding the dummy when docking the next
+    item to be docked. This isn't always necessary as `dummyHide` gets triggered
+    appropriately for preventing the aforementioned 'jump' while scrolling.
 * `active`: (_type: Boolean, default: true_) <br />
     A boolean of whether or not the newly initialized DockSimple object does
     anything. In order to activate later, call the `DockSimple.activate` method.
@@ -76,6 +88,35 @@ The following can be invoked directly from the instantiated object returned from
     Detaches the `scrollEvent` from the `window` if already attached and sets
     the `active` state to false. Given a single argument `true`, will call
     `undockElement` for immediate undocking.
+
+### Class Methods
+
+Methods to be invoked directly on the `DockSimple` class without having to
+create an instance of it:
+
+* `multiDock`: (_args: selector [Element], options [Object]_) <br />
+    Creates multiple instances of `DockSimple` for handling the docking
+    of many elements on the page. Returns an array of the created instances of
+    DockSimple.
+    
+    This **will** create as many `scroll` events as elements found, so be wary
+    of doing heavy calculation in any `docked` or `undocked` event triggered.
+    You may find it useful to use the provided `throttle` and `debounce` methods
+    when using this.
+
+    The passed in selector should not have an index provided in it's string.
+    For example: use `.menu` and not `.menu[0]` as you would with maybe only one
+    instance of DockSimple.
+
+    Given the `replaceElement` option value of true but no `multiReplace`, this
+    will not hide the dummy replacement until the first docked element is
+    undocked from the top. That is - when scrolling down the page, the dummy
+    will not be hidden to prevent a 'jump'. When scrolling up the page, the
+    dummy will be hidden when the first found element in the passed in
+    `selector` is undocked.
+
+    If `multiReplace` is passed in as true, dummy elements will be hidden when
+    their docked element is undocked.
 
 ### Provided
 

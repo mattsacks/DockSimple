@@ -12,9 +12,7 @@
     :javascript
       window.addEvent('domready', function() {
         var dockOptions = {
-          undockElement: '#undocker',
           undockAt:      'top',
-          undockSide:    'bottom',
           replaceElement: true,
           onDocked: function(element, dockY) {
             return console.log('docked', element, dockY);
@@ -24,7 +22,7 @@
           }
         }
 
-        window.docker = new DockSimple('#menu', dockOptions);
+        window.dockers = DockSimple.multiDock('.menu', dockOptions)
       });
 
 
