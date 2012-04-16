@@ -1,0 +1,67 @@
+// Lato
+@import url(http://fonts.googleapis.com/css?family=Lato:900)
+
+// FontAwesome
+@font-face
+  font-family: 'FontAwesomeRegular'
+  src: url('../fontawesome-webfont.woff') format('woff')
+  font-weight: normal
+  font-style: normal
+
+.icons
+  font-family: 'FontAwesomeRegular'
+
+body
+  margin: 0 8px
+
+*
+  box-sizing: border-box
+
+#instructions
+  position: absolute
+  top: 300px
+  right: 50px
+
+  h2
+    font-family: 'Lato'
+    font-weight: 900
+
+  .arrow
+    font-size: 40px
+    margin-left: 50px
+
+    &:before
+      content: "\f063"
+
+.filler
+  border: 2px solid #4B97FF
+  height: 200px
+  width: 100%
+
+.menu
+  display: block
+  width: 100%
+
+  // iterate across the color spectrum
+  @for $i from 1 through 10
+    &.number-#{$i}
+      // a unique color per iteration
+      $color: hsl($i * 36, 100%, 80%)
+      background-color: $color
+      border: 5px solid darken($color, 15%)
+
+  &.docked
+    left: 8px
+    position: fixed
+    top: 0
+
+  ul
+    margin: 0
+    padding: 10px 0
+    width: 100%
+
+  li
+    display: inline-block
+    list-style-type: none
+    text-align: center
+    width: 19%

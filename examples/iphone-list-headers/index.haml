@@ -1,0 +1,53 @@
+!!! 5
+%html
+  %head
+    :javascript
+      // LiveReload
+      document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')
+
+    %link{:rel => "stylesheet", :href => "stylesheet.css"}
+    %script{:src => "../../core.min.js"}=""
+    %script{:src => "../../Source/DockSimple.js"}=""
+
+    :javascript
+      window.addEvent('domready', function() {
+        window.fillerWidth = $$('.filler')[0].getWidth();
+
+        var dockOptions = {
+          undockAt:       'top',
+          undockSide:     'bottom',
+          multiReplace:   true,
+          dummyHide:      false,
+          onDocked: function(element, dockY) {
+            element.setStyles({
+              top:      '',
+              position: '',
+              width:    fillerWidth
+            });
+          },
+          onUndocked: function(element, undockY, dir) {
+            if (dir === 'end') {
+              element.setStyles({
+                top:      undockY,
+                position: 'absolute'
+              });
+            }
+          }
+        }
+
+        window.dockers = DockSimple.multiDock('.menu', dockOptions);
+      });
+
+  %body
+    #instructions
+      %h2 Scroll Down
+      .arrow.icons
+
+    - 10.times do |i|
+      .menu{:class => "number-#{i + 1}"}
+        %ul
+          - 5.times do
+            %li &nbsp;
+
+      - 5.times do
+        .filler

@@ -1,0 +1,103 @@
+@import url(http://fonts.googleapis.com/css?family=Lato:900);
+@font-face {
+  font-family: "FontAwesomeRegular";
+  src: url("../fontawesome-webfont.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+.icons {
+  font-family: "FontAwesomeRegular";
+}
+
+body {
+  margin: 0 8px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+#instructions {
+  position: absolute;
+  top: 300px;
+  right: 50px;
+}
+#instructions h2 {
+  font-family: "Lato";
+  font-weight: 900;
+}
+#instructions .arrow {
+  font-size: 40px;
+  margin-left: 50px;
+}
+#instructions .arrow:before {
+  content: "\f063";
+}
+
+.filler {
+  border: 2px solid #4b97ff;
+  height: 200px;
+  width: 100%;
+}
+
+.menu {
+  display: block;
+  width: 100%;
+}
+.menu.number-1 {
+  background-color: #ffd699;
+  border: 5px solid #ffb84d;
+}
+.menu.number-2 {
+  background-color: #ebff99;
+  border: 5px solid #dbff4d;
+}
+.menu.number-3 {
+  background-color: #adff99;
+  border: 5px solid #70ff4d;
+}
+.menu.number-4 {
+  background-color: #99ffc2;
+  border: 5px solid #4dff94;
+}
+.menu.number-5 {
+  background-color: #99ffff;
+  border: 5px solid #4dffff;
+}
+.menu.number-6 {
+  background-color: #99c2ff;
+  border: 5px solid #4d94ff;
+}
+.menu.number-7 {
+  background-color: #ad99ff;
+  border: 5px solid #704dff;
+}
+.menu.number-8 {
+  background-color: #eb99ff;
+  border: 5px solid #db4dff;
+}
+.menu.number-9 {
+  background-color: #ff99d6;
+  border: 5px solid #ff4db8;
+}
+.menu.number-10 {
+  background-color: #ff9999;
+  border: 5px solid #ff4d4d;
+}
+.menu.docked {
+  left: 8px;
+  position: fixed;
+  top: 0;
+}
+.menu ul {
+  margin: 0;
+  padding: 10px 0;
+  width: 100%;
+}
+.menu li {
+  display: inline-block;
+  list-style-type: none;
+  text-align: center;
+  width: 19%;
+}

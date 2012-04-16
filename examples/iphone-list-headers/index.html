@@ -8,31 +8,45 @@
       //]]>
     </script>
     <link href='stylesheet.css' rel='stylesheet' />
-    <script src='core.min.js'></script>
-    <script src='Source/DockSimple.js'></script>
+    <script src='../../core.min.js'></script>
+    <script src='../../Source/DockSimple.js'></script>
     <script type='text/javascript'>
       //<![CDATA[
         window.addEvent('domready', function() {
+          window.fillerWidth = $$('.filler')[0].getWidth();
+        
           var dockOptions = {
-            undockAt:      'top',
-            replaceElement: true,
+            undockAt:       'top',
+            undockSide:     'bottom',
+            multiReplace:   true,
+            dummyHide:      false,
             onDocked: function(element, dockY) {
-              return console.log('docked', element, dockY);
+              element.setStyles({
+                top:      '',
+                position: '',
+                width:    fillerWidth
+              });
             },
-            onUndocked: function(element, undockY) {
-              return console.log('undocked', element, undockY);
+            onUndocked: function(element, undockY, dir) {
+              if (dir === 'end') {
+                element.setStyles({
+                  top:      undockY,
+                  position: 'absolute'
+                });
+              }
             }
           }
         
-          window.dockers = DockSimple.multiDock('.menu', dockOptions)
+          window.dockers = DockSimple.multiDock('.menu', dockOptions);
         });
       //]]>
     </script>
   </head>
   <body>
-    <div class='filler'></div>
-    <div class='filler'></div>
-    <div class='filler'></div>
+    <div id='instructions'>
+      <h2>Scroll Down</h2>
+      <div class='arrow icons'></div>
+    </div>
     <div class='menu number-1'>
       <ul>
         <li>&nbsp;</li>
