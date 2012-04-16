@@ -58,7 +58,6 @@ DockSimple = new Class
           height:  @elementHeight
           display: 'none'
 
-      @options.dummyHide = true
       @element.grab(@dummy, 'after')
 
     # cache the bound method for attaching/detaching
@@ -127,23 +126,20 @@ DockSimple = new Class
     @element.removeClass(@options.dockedClass)
     @docked = false
 
-    if @options.replaceElement and @options.dummyHide
-      # always undock the dummy element if there's multiple instances
-      if @options.multiReplace
+    # don't always hide the dummy when scrolling down the page
+    if @options.replaceElement
+      # if dummyHide is defined true, always hide it in any direction
+      if @options.dummyHide
         @dummy.setStyle('display', 'none')
-      # undock the dummy element when scrolling up the page
-      else if dir is 'start' and @options.multiDock
-        @dummy.setStyle('display', 'none')
-      # undock the dummy element when scrolling down the
-      # page for a single instance of DockSimple
-      else unless dir is 'end' and @options.multiDock
+      # if dummyHide is defined false and scrolling up, then hide it
+      else unless @options.dummyHide? and dir is 'end'
         @dummy.setStyle('display', 'none')
 
     # pass the undocked coordinate from the scrolled direction
     if dir is 'start'
-      this.fireEvent('undocked', [@element, @elementY])
+      this.fireEvent('undocked', [@element, @elementY, dir])
     else if dir is 'end'
-      this.fireEvent('undocked', [@element, @undockY])
+      this.fireEvent('undocked', [@element, @undockY, dir])
     else
       this.fireEvent('undocked', @element)
 
@@ -168,16 +164,17 @@ DockSimple = new Class
 DockSimple.extend
   # create multiple instances of DockSimple to dock multiple elements
   multiDock: (selector, options) ->
-    elements = $$(selector).length
-    if elements > 0
+    elements = $$(selector)
+    if elements.length > 0
       dockers = []
-      options.multiDock = true
 
-      for i in [0...elements]
-        # don't create a dummy element for each selection unless directed to
+      for x, i in elements
         if i is 1 and !options.multiReplace and options.replaceElement
+          # don't create a dummy element for each selection
           options.replaceElement = false
-          options.dummyHide      = false
+        else if options.multiReplace
+          options.dummyHide      ?= true 
+          options.replaceElement = true
 
         undockSelector = selector + '[' + (i + 1) + ']'
         Object.merge(options, undockElement: undockSelector)

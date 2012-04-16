@@ -41,20 +41,23 @@ elements. Please explore the examples folder for some ideas and inspiration.
     `element`.
 * `dummyHide`: (_type: Boolean, default: false_) <br />
     Determines whether or not to hide the replacement element when undocking the
-    `element`. This will get switched to true automatically when using
-    `replaceElement`.
+    `element` while scrolling down the page. Prevents the 'jump' when undocking
+    the element.
 * `multiReplace`: (_type: Boolean, default: false_) <br />
     Adds a dummy replacement element for each docked element when using
-    `DockSimple.multiDock`.  Defaults to hiding the dummy when docking the next
-    item to be docked. This isn't always necessary as `dummyHide` gets triggered
-    appropriately for preventing the aforementioned 'jump' while scrolling.
+    `DockSimple.multiDock`. This (obviously) sets `replaceElement` to true.
+    Defaults to hiding the dummy when docking the next item to be docked, but
+    this can be overridden by setting `dummyHide` to false.
 * `active`: (_type: Boolean, default: true_) <br />
     A boolean of whether or not the newly initialized DockSimple object does
     anything. In order to activate later, call the `DockSimple.activate` method.
-* `onDocked`: (_type: Function, returns: element [Element], elementY [Number]_) <br />
+* `onDocked`: (_type: Function, args: element [Element], elementY [Number]_) <br />
     Fires when docking the given `element`.
-* `onUndocked`: (_type: Function, returns: element [Element], undockY [Number]_) <br />
-    Fires when undocking the given `element`.
+* `onUndocked`: (_type: Function, args: element [Element], undockY [Number], dir [String]_) <br />
+    Fires when undocking the given `element`. Arguments passed represent the
+    `element`, the current scroll amount of being undocked (whether from the
+    start or end), and the direction in which the element was undocked (values
+    will be either `start` or `end`).
 
 ### Events
 
@@ -125,7 +128,7 @@ create an instance of it:
 Added to the `String` type is `findElementIndex`, a easy way to pass a string
 selector and index the found elements.
 
-* `findElementIndex`: (_returns: Element, args: selector [String]_) <br />
+* `findElementIndex`: (_args: selector [String], returns: Element_) <br />
     Given a selector string `.foo[2]`, this will find the second instance of an
     element with the `foo` class on the page. If nothing with the given index is
     found, returns `undefined`. If passed in a selector with no index provided,
@@ -141,11 +144,11 @@ selector and index the found elements.
 Two added methods on the `Function` type, `throttle` and `debounce`, are
 available for modifying amplitude of the `scrollEvent` if needed.
 
-* `throttle`: (_returns: Function, args: interval [Number]_) <br />
+* `throttle`: (_args: interval [Number], returns: Function_) <br />
     Provides a throttle method to limit the amount that a function is called
     repetitively. Useful for minifying the amount that the `scrollEvent` is
     called while scrolling the page.
-* `debounce`: (_returns: Function, args: delay [Number]_) <br />
+* `debounce`: (_args: delay [Number], returns: Function_) <br />
     Allows a function to prevent from being called until completed after a given
     delay. Great when a lot of math needs to happen on the current `scrollY` but
     not until after scrolling has finished.

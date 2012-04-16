@@ -50,7 +50,6 @@ DockSimple = new Class({
           display: 'none'
         }
       });
-      this.options.dummyHide = true;
       this.element.grab(this.dummy, 'after');
     }
     this.scrollEvent = this.toDock.bind(this);
@@ -93,19 +92,17 @@ DockSimple = new Class({
     if (this.element.hasClass(this.options.forcedClass)) return;
     this.element.removeClass(this.options.dockedClass);
     this.docked = false;
-    if (this.options.replaceElement && this.options.dummyHide) {
-      if (this.options.multiReplace) {
+    if (this.options.replaceElement) {
+      if (this.options.dummyHide) {
         this.dummy.setStyle('display', 'none');
-      } else if (dir === 'start' && this.options.multiDock) {
-        this.dummy.setStyle('display', 'none');
-      } else if (!(dir === 'end' && this.options.multiDock)) {
+      } else if (!((this.options.dummyHide != null) && dir === 'end')) {
         this.dummy.setStyle('display', 'none');
       }
     }
     if (dir === 'start') {
-      this.fireEvent('undocked', [this.element, this.elementY]);
+      this.fireEvent('undocked', [this.element, this.elementY, dir]);
     } else if (dir === 'end') {
-      this.fireEvent('undocked', [this.element, this.undockY]);
+      this.fireEvent('undocked', [this.element, this.undockY, dir]);
     } else {
       this.fireEvent('undocked', this.element);
     }
@@ -125,15 +122,17 @@ DockSimple = new Class({
 
 DockSimple.extend({
   multiDock: function(selector, options) {
-    var dockers, elements, i, undockSelector;
-    elements = $$(selector).length;
-    if (elements > 0) {
+    var dockers, elements, i, undockSelector, x, _len;
+    elements = $$(selector);
+    if (elements.length > 0) {
       dockers = [];
-      options.multiDock = true;
-      for (i = 0; 0 <= elements ? i < elements : i > elements; 0 <= elements ? i++ : i--) {
+      for (i = 0, _len = elements.length; i < _len; i++) {
+        x = elements[i];
         if (i === 1 && !options.multiReplace && options.replaceElement) {
           options.replaceElement = false;
-          options.dummyHide = false;
+        } else if (options.multiReplace) {
+          if (options.dummyHide == null) options.dummyHide = true;
+          options.replaceElement = true;
         }
         undockSelector = selector + '[' + (i + 1) + ']';
         Object.merge(options, {
