@@ -39,7 +39,10 @@ DockSimple = new Class({
     this.setOptions(options);
     this.element = element.findElementIndex();
     this.elementHeight = this.element.getHeight();
-    this.undocker = this.options.undockElement != null ? this.attachUndocker(this.options.undockElement) : void 0;
+    if (this.options.undockElement != null) {
+      this.undocker = this.attachUndocker(this.options.undockElement);
+    }
+    this.scrollElement = document.id(this.options.scrollElement) || window;
     this.elementY = this.options.dockCoordinate || this.element.getCoordinates().top - this.options.dockOffset;
     this.active = this.options.active;
     if (this.options.replaceElement) {
@@ -53,7 +56,7 @@ DockSimple = new Class({
       this.element.grab(this.dummy, 'after');
     }
     this.scrollEvent = this.toDock.bind(this);
-    if (!!this.active) window.addEvent('scroll', this.scrollEvent);
+    if (this.active) this.scrollElement.addEvent('scroll', this.scrollEvent);
     return this;
   },
   attachUndocker: function(undocker) {
@@ -109,12 +112,12 @@ DockSimple = new Class({
     return this;
   },
   activate: function(attach) {
-    if (!this.active) window.addEvent('scroll', this.scrollEvent);
+    if (!this.active) this.scrollElement.addEvent('scroll', this.scrollEvent);
     this.active = true;
     if (attach) return this.dockElement();
   },
   deactivate: function(detach) {
-    if (this.active) window.removeEvent('scroll', this.scrollEvent);
+    if (this.active) this.scrollElement.removeEvent('scroll', this.scrollEvent);
     this.active = false;
     if (detach) return this.undockElement();
   }

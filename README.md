@@ -19,6 +19,9 @@ elements. Please explore the examples folder for some ideas and inspiration.
 
 ### Options
 
+* `scrollElement`: (_type: String, default: 'window'_) <br />
+    What DockSimple attaches the `scroll` event to. The passed in string should
+    be an element id with which to look up in `document.id()`
 * `undockElement`: (_type: Element_) <br />
     The element in which DockSimple will undock it's `element` at
 * `undockAt`: (_type: String, default: 'bottom'_) <br />
@@ -129,10 +132,10 @@ Added to the `String` type is `findElementIndex`, a easy way to pass a string
 selector and index the found elements.
 
 * `findElementIndex`: (_args: selector [String], returns: Element_) <br />
-    Given a selector string `.foo[2]`, this will find the second instance of an
+    Given a selector string `.foo[2]`, this will find the third instance of an
     element with the `foo` class on the page. If nothing with the given index is
     found, returns `undefined`. If passed in a selector with no index provided,
-    (example: `.foo.findElementIndex()`), returns the first instance of the
+    (example: `'.foo'.findElementIndex()`), returns the first instance of the
     element found.
 
     example: `var docker = new DockSimple('.menu[2]', {

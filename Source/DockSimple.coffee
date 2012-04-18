@@ -41,7 +41,8 @@ DockSimple = new Class
     # gather our elements
     @element = element.findElementIndex()
     @elementHeight = @element.getHeight()
-    @undocker = if @options.undockElement? then @attachUndocker(@options.undockElement)
+    @undocker = @attachUndocker(@options.undockElement) if @options.undockElement?
+    @scrollElement = document.id(@options.scrollElement) || window
 
     # calculate the coordinates of the element to dock
     @elementY =
@@ -63,7 +64,7 @@ DockSimple = new Class
     # cache the bound method for attaching/detaching
     @scrollEvent = @toDock.bind(this)
 
-    window.addEvent('scroll', @scrollEvent) unless !@active
+    @scrollElement.addEvent('scroll', @scrollEvent) if @active
 
     return this
 
@@ -148,14 +149,14 @@ DockSimple = new Class
   # re-attach scroll event if previously detached  
   # _params_: **attach** [Boolean] - determine calling dockElement() immediately
   activate: (attach) ->
-    window.addEvent('scroll', @scrollEvent) unless @active
+    @scrollElement.addEvent('scroll', @scrollEvent) unless @active
     @active = true
     if attach then @dockElement()
 
   # detach the scroll event from window  
   # _params_: **detach** [Boolean] - determine calling undockElement() immediately
   deactivate: (detach) ->
-    window.removeEvent('scroll', @scrollEvent) if @active
+    @scrollElement.removeEvent('scroll', @scrollEvent) if @active
     @active = false
     if detach then @undockElement()
 
@@ -173,7 +174,7 @@ DockSimple.extend
           # don't create a dummy element for each selection
           options.replaceElement = false
         else if options.multiReplace
-          options.dummyHide      ?= true 
+          options.dummyHide     ?= true 
           options.replaceElement = true
 
         undockSelector = selector + '[' + (i + 1) + ']'
