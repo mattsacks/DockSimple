@@ -1,0 +1,13 @@
+--- 
+name: "DockSimple"
+description: "A MooTools class for docking elements at a certain scroll threshold."
+category: "Utilities"
+tags: 
+  - "scroll"
+  - "dock"
+current: "0.1"
+author: "mattsa"
+contact: "matt.s.sacks@gmail.com"
+website: "http://sacks.io"
+sources:
+  - "Source/DockSimple.js"
